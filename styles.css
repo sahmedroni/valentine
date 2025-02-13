@@ -7,6 +7,7 @@
 body {
     font-family: 'Montserrat', sans-serif;
     overflow-x: hidden;
+    cursor: pointer;
 }
 
 /* Updated Color Scheme */
@@ -59,13 +60,24 @@ h1 {
     font-weight: 700;
 }
 
-.heart {
+/* Floating hearts */
+.floating-heart {
+    position: absolute;
+    animation: heartFloat 5s linear infinite;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Main clickable heart */
+#mainHeart {
     font-size: 3rem;
     cursor: pointer;
-    animation: float 3s ease-in-out infinite;
-    transition: transform 0.3s ease;
     color: var(--accent);
     text-shadow: 0 0 15px rgba(255, 20, 147, 0.5);
+    position: relative;
+    z-index: 1;
+    animation: float 3s ease-in-out infinite;
 }
 
 .message {
@@ -126,16 +138,24 @@ h1 {
 
 /* Floating hearts animation */
 @keyframes heartFloat {
-    0% { transform: translateY(0) rotate(45deg); opacity: 0; }
-    50% { opacity: 1; }
-    100% { transform: translateY(-100vh) rotate(45deg); opacity: 0; }
+    0% { 
+        transform: translateY(0) rotate(45deg); 
+        opacity: 0; /* Start fully transparent */
+    }
+    20% { 
+        opacity: 0.8; /* Fade in quickly */
+    }
+    50% { 
+        opacity: 0.8; /* Stay visible */
+    }
+    100% { 
+        transform: translateY(-100vh) rotate(45deg); 
+        opacity: 0; /* Fade out at end */
+    }
 }
 
 .hearts-container::before {
-    content: '❤';
-    position: absolute;
-    color: var(--secondary);
-    animation: heartFloat 3s linear infinite;
+    content: none;
 }
 
 @media (max-width: 480px) {
@@ -150,4 +170,27 @@ h1 {
     .card {
         padding: 1.5rem;
     }
+}
+
+/* Add quote container styling */
+.quote-container {
+    color: #c44569;
+    font-size: 1.2rem;
+    margin: 1rem 0;
+    font-style: italic;
+    transition: all 0.5s ease;
+}
+
+/* Add pop-up styling */
+.sorry-popup {
+    position: absolute;
+    animation: popUp 1s ease-out forwards;
+    pointer-events: none;
+}
+
+@keyframes popUp {
+    0% { opacity: 0; transform: translate(-50%, -30%) scale(0.5); }
+    30% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+    70% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    100% { opacity: 0; transform: translate(-50%, -70%) scale(0.8); }
 }
