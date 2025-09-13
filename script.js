@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const button = document.getElementById('loveButton');
     const message = document.getElementById('mainMessage');
     const heart = document.getElementById('mainHeart');
-    
+
     // Create floating hearts
     function createHearts() {
         const heartCount = 30;
@@ -58,39 +58,46 @@ document.addEventListener('DOMContentLoaded', () => {
         fire(0.1, { spread: 120, startVelocity: 45 });
     }
 
-    heart.addEventListener('click', () => {
+    // Accessibility: Enable keyboard interaction
+    heart.addEventListener('click', showMessageAndConfetti);
+    heart.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') showMessageAndConfetti();
+    });
+
+    function showMessageAndConfetti() {
         message.classList.remove('hidden');
         message.classList.add('visible');
-        
+
         if(firstClick) {
             const sorryPopup = document.createElement('div');
             sorryPopup.className = 'sorry-popup';
+            sorryPopup.setAttribute('aria-live', 'polite');
             sorryPopup.innerHTML = '💔<br><strong>SORRY</strong>';
             document.body.appendChild(sorryPopup);
-            
+
             setTimeout(() => {
                 sorryPopup.remove();
             }, 2000);
-            
+
             firstClick = false;
         }
-        
+
         triggerConfetti();
         heart.style.animation = 'none';
         setTimeout(() => heart.style.animation = 'float 3s ease-in-out infinite', 10);
-    });
+    }
 
     button.addEventListener('click', () => {
         const quoteDisplay = document.getElementById('quoteDisplay');
-        
+
         // Get current quote and increment index
         const currentQuote = loveQuotes[currentQuoteIndex];
         currentQuoteIndex = (currentQuoteIndex % (loveQuotes.length - 1)) + 1;
-        
+
         quoteDisplay.textContent = currentQuote;
         quoteDisplay.classList.remove('hidden');
         quoteDisplay.classList.add('visible');
-        
+
         triggerConfetti();
         createHearts();
     });
@@ -98,17 +105,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initial hearts
     createHearts();
 
-    // Add this at the bottom of the DOMContentLoaded event
+    // Show SORRY popup on click outside heart and button, positioned for accessibility
     document.addEventListener('click', (e) => {
-        // Only prevent on heart and button
         if(!e.target.closest('#mainHeart, #loveButton')) {
             const sorryPopup = document.createElement('div');
             sorryPopup.className = 'sorry-popup';
             sorryPopup.style.left = e.clientX + 'px';
             sorryPopup.style.top = e.clientY + 'px';
+            sorryPopup.setAttribute('aria-live', 'polite');
             sorryPopup.innerHTML = '💔<br><strong>SORRY</strong>';
             document.body.appendChild(sorryPopup);
-            
+
             setTimeout(() => {
                 sorryPopup.remove();
             }, 1500);
